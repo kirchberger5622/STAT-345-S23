@@ -1,0 +1,106 @@
+---
+title: "Midterm"
+author: "Matthew Kirchberger"
+date: "2023-03-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(nbastatR)
+library(ggplot2)
+library(ggforce)
+library(gganimate)
+```
+
+```{r}
+Sys.setenv("VROOM_CONNECTION_SIZE" = 2000000)
+gsw_shots_2015 <- teams_shots(teams = "Golden State Warriors", all_active_teams = FALSE, season_types = "Regular Season", seasons = 2015)
+gsw_shots_2016 <- teams_shots(teams = "Golden State Warriors", all_active_teams = FALSE, season_types = "Regular Season", seasons = 2016)
+gsw_shots_2017 <- teams_shots(teams = "Golden State Warriors", all_active_teams = FALSE, season_types = "Regular Season", seasons = 2017)
+gsw_shots <- bind_rows(gsw_shots_2015, gsw_shots_2016, gsw_shots_2017)
+```
+
+```{r}
+ggplot(data = gsw_shots_2015, aes(x = locationX, y = locationY, color = isShotMade, shape = typeShot)) +
+  geom_point(alpha = 0.6) +
+  scale_x_continuous(limits = c(-250, 250)) +
+  scale_y_continuous(limits = c(-50, 450)) +
+  coord_fixed(ratio = 1) +
+  theme_minimal() +
+  scale_color_manual(name = "Shot Outcome", values = c("#FDB927", "blue"), labels = c("Missed", "Made")) +   scale_shape_manual(name = "Type of Shot", values = c(16,17), labels = c("2 Point", "3 Point")) +
+  labs(x = "BASELINE", y = "SIDELINE", title = "Golden State Warriors Shot Chart 2014-15")
+```
+
+```{r}
+ggplot(data = gsw_shots, aes(x = locationX, y = locationY, color = isShotMade, shape = typeShot)) +
+  geom_point(alpha = 0.6) +
+  scale_x_continuous(limits = c(-250, 250)) +
+  scale_y_continuous(limits = c(-50, 450)) +
+  coord_fixed(ratio = 1) +
+  theme_minimal() +
+  scale_color_manual(name = "Shot Outcome", values = c("#FDB927", "blue"), labels = c("Missed", "Made")) +   scale_shape_manual(name = "Type of Shot", values = c(16,17), labels = c("2 Point", "3 Point")) +
+  labs(x = "BASELINE", y = "SIDELINE", title = "Golden State Warriors Shot Chart 2014-17")
+```
+
+   - The Golden State Warriors from 2014-2017 had the highest efficiency in terms of field goal percentage around the hoop
+      - Around the point (0,0) is where the closest point to the hoop is, and within that radius of about 10, we see very limited yellow marks which indicate misses. Every team in the NBA has had extreme success because of the close proximity to the hoop in this range. 
+   - Following the 2014-15 Regular Season, The Warriors started to shoot more three pointers and strayed away from the mid range type of shot. The right side wing of the three point line seems to be more efficient with makes.
+      - We see this happen through the scatter plot as the three point arc is extremely dense compared to the 2014-15 year. This is likely a result of their three point success that year which they eventually switched to a three point heavy shooting offense. We can see the thickness of the three point shooting area also expand which is indicative of this. The right side wing is slightly more concentrated with blue than that of the opposite side. The Warriors going forward, should continue to lean slightly towards shooting from the right side of the basket than the left.
+   - The Warriors became more efficient over the years in terms of their three point shooting when extending beyond the three point by several feet.
+      - When examining the relationship of the 2014-15 Regular Season compared to the years examined, deeper shots were taken, and made, that were likely during a regular possession rather than at the end of the clock. In general, the number of shots and distance increased during this period
+   - It appears that during the 2014-15 Regular Season and even 2015-17, the Warriors preferred to shoot from the top of the three point line rather than in the corner of the sideline and baseline.
+      - Much of the ball movement in the NBA is started from the top of the three point line to the wings. These shots off a lot more movement for the ball carrier to extend his range and not be limited to the corner, which is why there exists a discrepancy.
+   - There are very few shots that are taken a foot inside the three point line for the years examined.
+      - There is a clear white curve a foot within the three point line. The Warriors and many other teams prefer not to be taking these shots due to risk/reward for only getting two points. As a result the three point shots taken is higher because they choose to step back a foot or two to get the extra point if the shot is made 
+   - Warriors are inefficient shooting jump shots close to the hoop.
+      - The Warriors seem to be inefficient when taking shots from the free throw line and a few steps further from the baseline and also while directly in the middle of the lane.
+   
+   CODE BELOW:
+   
+   gsw_shots_2015 <- teams_shots(teams = "Golden State Warriors", all_active_teams = FALSE, season_types = "Regular Season", seasons = 2015)
+gsw_shots_2016 <- teams_shots(teams = "Golden State Warriors", all_active_teams = FALSE, season_types = "Regular Season", seasons = 2016)
+gsw_shots_2017 <- teams_shots(teams = "Golden State Warriors", all_active_teams = FALSE, season_types = "Regular Season", seasons = 2017)
+gsw_shots <- bind_rows(gsw_shots_2015, gsw_shots_2016, gsw_shots_2017)
+
+This section of the code takes every shot recorded in the NBA of the years collected and limits the shots taken to that of the Golden State Warriors during the Regular Season of the years 2014-15, 2015-16, and 2016-17. The data is then binded together into an object called 'gsw_shots' which will encompass all three Regular Seasons and be able to examine them in the future.
+
+   ggplot(data = gsw_shots_2015, aes(x = locationX, y = locationY, color = isShotMade, shape = typeShot)) +
+  geom_point(alpha = 0.6) +
+  scale_x_continuous(limits = c(-250, 250)) +
+  scale_y_continuous(limits = c(-50, 450)) +
+  coord_fixed(ratio = 1) +
+  theme_minimal() +
+  scale_color_manual(name = "Shot Outcome", values = c("#FDB927", "blue"), labels = c("Missed", "Made")) +   scale_shape_manual(name = "Type of Shot", values = c(16,17), labels = c("2 Point", "3 Point")) +
+  labs(x = "BASELINE", y = "SIDELINE", title = "Golden State Warriors Shot Chart 2014-15")
+  
+This section of code creates a scatter plot for the 2014-15 shots taken. The points on the scatter plot are created on an x and y plane which the data has collected for us. The shots are then colored according to whether or not the shot was made or missed and the type of shot is also recorded to know whether or not it was behind the three point line or within. The Shot Outcome is apart of the legend to indicate what the colors mean, and the Type of Shot determines whether it was a three pointer or a two. The axis labels indicate where the Sideline is and where the Baseline is and the hoop can be determined from these two axis.
+  
+  ggplot(data = gsw_shots, aes(x = locationX, y = locationY, color = isShotMade, shape = typeShot)) +
+  geom_point(alpha = 0.6) +
+  scale_x_continuous(limits = c(-250, 250)) +
+  scale_y_continuous(limits = c(-50, 450)) +
+  coord_fixed(ratio = 1) +
+  theme_minimal() +
+  scale_color_manual(name = "Shot Outcome", values = c("#FDB927", "blue"), labels = c("Missed", "Made")) +   scale_shape_manual(name = "Type of Shot", values = c(16,17), labels = c("2 Point", "3 Point")) +
+  labs(x = "BASELINE", y = "SIDELINE", title = "Golden State Warriors Shot Chart 2014-17")
+  
+This section is representative of the 3 years being examined, and uses the same parameters as the previous graph.
+
+```{r}
+ggplot(data = gsw_shots, aes(x = locationX, y = locationY)) +
+  stat_density_2d(aes(fill = ..density..), geom = "tile", contour = FALSE) +
+  scale_fill_gradient(low = "white", high = "red") +
+  scale_x_continuous(limits = c(-250, 250)) +
+  scale_y_continuous(limits = c(-50, 450)) +
+  coord_fixed(ratio = 1) +
+  theme_minimal() +
+  labs(x = "BASELINE", y = "SIDELINE", title = "Golden State Warriors Shot Chart 2014-17") +
+  annotate("text", x = 0, y = 450, label = paste("2-Point Shots:", sum(gsw_shots$typeShot == "2PT Field Goal")), hjust = 1, size = 4) +
+  annotate("text", x = 250, y = 450, label = paste("3-Point Shots:", sum(gsw_shots$typeShot == "3PT Field Goal")), hjust = 1, size = 4)
+```
+
+Looking at this graphic, we can visualize a heat map based on the density of where their shots on the court were taken the most. There is a clear heat signature around the hoop showing that this was the most concentrated area from where shots were taken, and the three point line itself is slightly more dense than anywhere else besides the hoop in the two point range. There was also an added counter of shots to show the that they took slightly more than 33% of their shots from the three point range.
